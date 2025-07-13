@@ -1,5 +1,5 @@
-import React from 'react';
-import { Search, Home, Play, Grid3X3, Heart, Upload } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Home, Play, Grid3X3, Heart, Upload, Menu, X } from 'lucide-react';
 
 interface HeaderProps {
   searchQuery: string;
@@ -9,6 +9,8 @@ interface HeaderProps {
 }
 
 export default function Header({ searchQuery, onSearchChange, currentView, onViewChange }: HeaderProps) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <header className="bg-slate-900/80 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,13 +20,13 @@ export default function Header({ searchQuery, onSearchChange, currentView, onVie
             <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-emerald-400 rounded-lg flex items-center justify-center">
               <Play className="w-6 h-6 text-slate-900" fill="currentColor" />
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
               NEXUS
             </h1>
           </div>
 
           {/* Search Bar */}
-          <div className="flex-1 max-w-lg mx-8">
+          <div className="hidden md:flex flex-1 max-w-lg mx-8">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
               <input
@@ -37,8 +39,8 @@ export default function Header({ searchQuery, onSearchChange, currentView, onVie
             </div>
           </div>
 
-          {/* Navigation */}
-          <nav className="flex items-center space-x-2">
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-2">
             <button
               onClick={() => onViewChange('home')}
               className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center space-x-2 ${
@@ -48,7 +50,7 @@ export default function Header({ searchQuery, onSearchChange, currentView, onVie
               }`}
             >
               <Home className="w-4 h-4" />
-              <span className="hidden sm:inline">HOME</span>
+              <span>HOME</span>
             </button>
             <button
               onClick={() => onViewChange('all')}
@@ -59,7 +61,7 @@ export default function Header({ searchQuery, onSearchChange, currentView, onVie
               }`}
             >
               <Grid3X3 className="w-4 h-4" />
-              <span className="hidden sm:inline">ALL VIDEOS</span>
+              <span>ALL VIDEOS</span>
             </button>
             <button
               onClick={() => onViewChange('favorites')}
@@ -70,7 +72,7 @@ export default function Header({ searchQuery, onSearchChange, currentView, onVie
               }`}
             >
               <Heart className="w-4 h-4" />
-              <span className="hidden sm:inline">FAVORITES</span>
+              <span>FAVORITES</span>
             </button>
             <button
               onClick={() => onViewChange('upload')}
@@ -81,10 +83,97 @@ export default function Header({ searchQuery, onSearchChange, currentView, onVie
               }`}
             >
               <Upload className="w-4 h-4" />
-              <span className="hidden sm:inline">UPLOAD</span>
+              <span>UPLOAD</span>
             </button>
           </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 text-slate-300 hover:text-cyan-400 transition-colors"
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-slate-700/50 py-4">
+            {/* Mobile Search */}
+            <div className="mb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="SEARCH ARCHIVE..."
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  className="w-full bg-slate-800/50 border border-slate-600/50 rounded-lg pl-10 pr-4 py-2 text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Mobile Navigation */}
+            <nav className="space-y-2">
+              <button
+                onClick={() => {
+                  onViewChange('home');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full px-4 py-3 rounded-lg font-medium transition-all flex items-center space-x-3 ${
+                  currentView === 'home'
+                    ? 'bg-cyan-500 text-slate-900'
+                    : 'text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50'
+                }`}
+              >
+                <Home className="w-5 h-5" />
+                <span>HOME</span>
+              </button>
+              <button
+                onClick={() => {
+                  onViewChange('all');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full px-4 py-3 rounded-lg font-medium transition-all flex items-center space-x-3 ${
+                  currentView === 'all'
+                    ? 'bg-cyan-500 text-slate-900'
+                    : 'text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50'
+                }`}
+              >
+                <Grid3X3 className="w-5 h-5" />
+                <span>ALL VIDEOS</span>
+              </button>
+              <button
+                onClick={() => {
+                  onViewChange('favorites');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full px-4 py-3 rounded-lg font-medium transition-all flex items-center space-x-3 ${
+                  currentView === 'favorites'
+                    ? 'bg-cyan-500 text-slate-900'
+                    : 'text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50'
+                }`}
+              >
+                <Heart className="w-5 h-5" />
+                <span>FAVORITES</span>
+              </button>
+              <button
+                onClick={() => {
+                  onViewChange('upload');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full px-4 py-3 rounded-lg font-medium transition-all flex items-center space-x-3 ${
+                  currentView === 'upload'
+                    ? 'bg-emerald-500 text-slate-900'
+                    : 'text-slate-300 hover:text-emerald-400 hover:bg-slate-800/50'
+                }`}
+              >
+                <Upload className="w-5 h-5" />
+                <span>UPLOAD</span>
+              </button>
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );
